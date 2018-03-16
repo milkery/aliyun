@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>知了堂互动聊天</title>
+    <!-- zui -->
+    <link href="zui/css/zui.min.css" rel="stylesheet">
+  </head>
+  <body style="background-image:url('5.jpg');">
+    <h1 style="text-align:center;">小知了问答系统</h1>
+
+    <!-- 在此处编码你的创意 -->
+	<div style="width:410px;height:380px; margin:auto;margin-top:100px;padding-top:10px;padding-bottom:10px;background:#b7e3f8;">
+	    <!-- 消息显示面板 -->
+		<div id="message"  class="alert alert-info" style="height:300px;width:400px;margin:auto;overflow-y:auto;">
+		
+	
+		
+		
+		</div>
+		
+		
+		 <!-- 创建小知了的消息发送面板 -->
+		<div id="sendpanel">
+			<input id="messageinput" class="form-control form-focus" autofocus style="width:400px;margin:auto; type="text" placeholder="请输入聊天对话内容"/	>
+			<button class="btn btn-primary " type="button" style="float:right;margin-right:5px;margin-top:6px; " onclick="sendmessage()">发送消息</button>
+			
+			
+		
+		</div>
+	
+	
+	
+	
+	
+	
+	</div>
+
+    <!-- jQuery (ZUI中的Javascript组件依赖于jQuery) -->
+    <script src="zui/jquery.js"></script>
+    <!-- ZUI Javascript组件 -->
+    <script src="zui/js/zui.min.js"></script>
+	<script type="text/javascript">
+	var audio=document.createElement("audio");
+	
+	new $.zui.Messager('欢迎访问小知了问答系统', {
+    type: 'warning' // 定义颜色主题
+	,time:5000
+}).show();
+speakBytext("欢迎访问小知了问答系统")
+function speakBytext(text){
+audio.src="http://tts.baidu.com/text2audio?lan=zh&ie=utf-8&spd=6&text="+text;
+audio.play();
+}
+
+function askBytext(info)
+{
+	$.ajax({
+		url:'http://yy.zhiliaotang.com/apip.php?info='+info,//请求的地址
+		type:'post',//目前网络基于BS结构的请求只有两种，一种是迫使他，一种是get
+		dataType:'jsonp',//xml/txt/json/jsonp/.... 
+		jsonp:'callback',
+		jsonpCallback:'callback',
+		success:function(result){
+			var msgpanel=$("#message").html();
+			msgpanel +="<div class='alert alert alert-warning-inverse'; style='margin-right:250px;'>"+result.text+"</div>";
+			speakBytext(result.text);
+	
+			$("#message").html(msgpanel);
+			$("#message").scrollTop($("#message")[0].scrollHeight);
+			
+		},
+		error:function(mag){
+		
+		}
+	
+	});
+
+}
+
+
+
+	function sendmessage(){
+	var inputmsg=$("#messageinput").val();
+	
+	if(inputmsg==""){
+	new $.zui.Messager('内容为空,请输入内容在发送', {
+    type: 'danger' // 定义颜色主题
+	,time:5000
+}).show();
+	}
+	else{
+	
+	
+	
+	var msgpanel=$("#message").html();
+	msgpanel +="<div class='alert alert-success-inverse' ; style='margin-left:250px;'>"+inputmsg+"</div>";
+	
+	
+	$("#message").html(msgpanel);
+	$("#message").scrollTop($("#message")[0].scrollHeight);
+	askBytext(inputmsg)
+	
+	
+	$("#messageinput").val("");
+	$("#messageinput").focus();
+	}
+}
+
+</script>
+  </body>
+</html>
